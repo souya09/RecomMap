@@ -13,6 +13,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 import jp.ac.cm0107.recommap.databinding.ActivityMapsBinding;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -48,9 +50,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapInit();
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+//        LatLng sydney = new LatLng(-34, 151);
+//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     private void mapInit() {
@@ -66,5 +68,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ui.setZoomControlsEnabled(true);
         ui.setZoomGesturesEnabled(true);
 
+        markerSet();
+    }
+    private ArrayList<ShopInfo> getShopInfoes(){
+        ArrayList<ShopInfo> ary = new ArrayList<ShopInfo>();
+
+        ShopInfo tmp1 = new ShopInfo();
+        tmp1.setPosition(new LatLng(35.696346,139.698336));
+        tmp1.setName("ラーメン二郎");
+        tmp1.setInformation("最強");
+        ary.add(tmp1);
+
+        ShopInfo tmp2 = new ShopInfo();
+        tmp2.setPosition(new LatLng(35.695339,139.696587));
+        tmp2.setName("風来居");
+        tmp2.setInformation("塩とんこつらーめん");
+        ary.add(tmp2);
+
+        return ary;
+    }
+    private void markerSet() {
+        MarkerOptions options = new MarkerOptions();
+        ArrayList<ShopInfo> list = getShopInfoes();
+        for (ShopInfo shop: list){
+            options.position(shop.getPosition());
+            options.title(shop.getName());
+            options.snippet(shop.getInformation());
+
+            mMap.addMarker(options);
+        }
     }
 }
