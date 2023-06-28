@@ -11,7 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     Button btn ;
-    Intent intent;
+    Button btn2;
+
     Spinner spn ;
     int category;
     @Override
@@ -19,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btn = findViewById(R.id.btnMapStart);
+        btn2 = findViewById(R.id.btnMapEdit);
         spn = findViewById(R.id.spnMode);
-        intent = new Intent(this,MapsActivity.class);
 
         ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(
                 this,
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,MapsActivity.class);
                 String item = (String) spn.getSelectedItem();
                 if (item.equals("ラーメン")){
                     category = 1;
@@ -48,6 +50,13 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("type",category);
 
 
+                startActivity(intent);
+            }
+        });
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,RecomEditActivity.class);
                 startActivity(intent);
             }
         });

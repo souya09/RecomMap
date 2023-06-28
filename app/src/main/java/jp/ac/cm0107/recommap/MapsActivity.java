@@ -2,8 +2,13 @@ package jp.ac.cm0107.recommap;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -15,7 +20,10 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -73,6 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ui.setZoomGesturesEnabled(true);
 
         markerSet();
+        mMap.setInfoWindowAdapter(new CustomInfoAdapter());
     }
     private ArrayList<ShopInfo> getShopInfoes(){
         ArrayList<ShopInfo> ary = new ArrayList<ShopInfo>();
@@ -82,6 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         tmp1.setPosition(new LatLng(35.696346,139.698336));
         tmp1.setName("ラーメン二郎");
         tmp1.setInformation("最強");
+        tmp1.setStar(4);
         ary.add(tmp1);
 
         ShopInfo tmp2 = new ShopInfo();
@@ -89,6 +99,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         tmp2.setPosition(new LatLng(35.695339,139.696587));
         tmp2.setName("風来居");
         tmp2.setInformation("塩とんこつらーめん");
+        tmp2.setStar(4.5);
         ary.add(tmp2);
 
         ShopInfo tmp3 = new ShopInfo();
@@ -96,6 +107,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         tmp3.setPosition(new LatLng(35.69564861808428, 139.6986493171861));
         tmp3.setName("麺屋武蔵");
         tmp3.setInformation("ちゃーしゅう旨い");
+        tmp3.setStar(5);
         ary.add(tmp3);
 
         ShopInfo tmp4 = new ShopInfo();
@@ -187,6 +199,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             options.icon(icon);
 
             mMap.addMarker(options);
+        }
+    }
+    private class CustomInfoAdapter implements GoogleMap.InfoWindowAdapter{
+        private final View mWindow;
+        public CustomInfoAdapter(){
+            mWindow = getLayoutInflater().inflate(R.layout.my_indo_window,null);
+        }
+        @Override
+        public View getInfoContents(@NonNull Marker marker) {
+            render(marker,mWindow);
+            return mWindow;
+        }
+
+        @Override
+        public View getInfoWindow(@NonNull Marker marker) {
+            return null;
+        }
+        private void render(Marker marker,View view){
+            TextView title = view.findViewById(R.id.title);
+            TextView snippet = view.findViewById(R.id.snippet);
+            RatingBar ratingBar = view.findViewById(R.id.info_rating_bar);
+            title.setText(marker.getTitle());
+            snippet.setText(marker.getSnippet());
+
         }
     }
 }

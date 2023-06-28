@@ -7,4 +7,5 @@
         <item>学校</item>
         <item>全部</item>
     </string-array>
+    <string name="title_activity_recom_edit">RecomEditActivity</string>
 </resources>

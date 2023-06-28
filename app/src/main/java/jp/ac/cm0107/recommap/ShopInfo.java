@@ -7,7 +7,7 @@ public class ShopInfo {
     private String name;
     private LatLng position;
     private String information;
-    private int star;
+    private Double star;
 
     public int getCategory() {
         return category;
@@ -41,11 +41,11 @@ public class ShopInfo {
         this.information = information;
     }
 
-    public int getStar() {
+    public double getStar() {
         return star;
     }
 
-    public void setStar(int star) {
+    public void setStar(double star) {
         this.star = star;
     }
 }
