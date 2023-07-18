@@ -1,13 +1,21 @@
 package jp.ac.cm0107.recommap;
 
-import com.google.android.gms.maps.model.LatLng;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+import com.google.android.gms.maps.model.LatLng;
+@Entity(tableName = "SHOPINFO")
 public class ShopInfo {
+    @PrimaryKey(autoGenerate = true)
+    private int _id;
+
     private int category;
     private String name;
-    private LatLng position;
+//    private LatLng position;
+    private double lat;
+    private double lng;
     private String information;
-    private Double star;
+    private double star;
 
     public int getCategory() {
         return category;
@@ -26,11 +34,12 @@ public class ShopInfo {
     }
 
     public LatLng getPosition() {
-        return position;
+        return new LatLng(lat,lng);
     }
 
     public void setPosition(LatLng position) {
-        this.position = position;
+        this.lat = position.latitude;
+        this.lng = position.longitude;
     }
 
     public String getInformation() {
