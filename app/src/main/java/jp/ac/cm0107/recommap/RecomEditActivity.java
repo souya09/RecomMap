@@ -1,16 +1,19 @@
 package jp.ac.cm0107.recommap;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.room.Room;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +25,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
 import jp.ac.cm0107.recommap.databinding.ActivityRecomEditBinding;
 
 public class RecomEditActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -30,12 +35,22 @@ public class RecomEditActivity extends FragmentActivity implements OnMapReadyCal
     private LatLng currLatLng = null;
     private ActivityRecomEditBinding binding;
 
+    public static final String DB_NAME = "recom_map.db";
+    private ShopInfoDao shopInfoDao;
+    private List<ShopInfo> shopInfoList;
+
+    private TextView txt;
+    private Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityRecomEditBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        handler = new Handler();
+        AppDatabase db = Room.databaseBuilder(this,AppDatabase.class,DB_NAME).build();
+        shopInfoDao = db.shopInfoDao();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
