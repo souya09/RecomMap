@@ -221,7 +221,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             shopInfoList = shopInfoDao.getAllShop();
-
+            //TODO　ここでエラー
             handler.post(() -> setMarker(shopInfoList));
         });
     }
@@ -231,6 +231,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions options = new MarkerOptions();
         ArrayList<ShopInfo> tmpList = new ArrayList<ShopInfo>();
         for(ShopInfo shopInfo: shopInfoList){
+            // TODO ここでエラー
             list.add(shopInfo);
         }
         Intent intent = getIntent();
