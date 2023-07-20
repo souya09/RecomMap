@@ -32,33 +32,27 @@ public class MainActivity extends AppCompatActivity {
 
         category = 0;
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,MapsActivity.class);
-                String item = (String) spn.getSelectedItem();
-                if (item.equals("ラーメン")){
-                    category = 1;
-                } else if (item.equals("コンビニ")) {
-                    category = 2;
-                } else if (item.equals("学校")) {
-                    category = 3;
-                }
-                else if (item.equals("全部")) {
-                    category = 0;
-                }
-                intent.putExtra("type",category);
-
-
-                startActivity(intent);
+        btn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this,MapsActivity.class);
+            String item = (String) spn.getSelectedItem();
+            if (item.equals("ラーメン")){
+                category = 1;
+            } else if (item.equals("コンビニ")) {
+                category = 2;
+            } else if (item.equals("学校")) {
+                category = 3;
             }
+            else if (item.equals("全部")) {
+                category = 0;
+            }
+            intent.putExtra("type",category);
+
+
+            startActivity(intent);
         });
-        btn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,RecomEditActivity.class);
-                startActivity(intent);
-            }
+        btn2.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this,RecomEditActivity.class);
+            startActivity(intent);
         });
     }
 }

@@ -2,14 +2,15 @@ package jp.ac.cm0107.recommap;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
+import androidx.room.Room;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,9 +24,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import jp.ac.cm0107.recommap.databinding.ActivityMapsBinding;
 
@@ -33,6 +35,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
+    public static final String DB_NAME = "recom_map.db";
+    private ShopInfoDao shopInfoDao;
+    private List<ShopInfo> shopInfoList;
+
+    private TextView txt;
+    private Handler handler;
+    private ArrayList<ShopInfo> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        handler = new Handler();
+        AppDatabase db = Room.databaseBuilder(this,AppDatabase.class,DB_NAME).build();
+        shopInfoDao = db.shopInfoDao();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -156,8 +168,82 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return ary;
     }
     private void markerSet() {
+//        MarkerOptions options = new MarkerOptions();
+//        ArrayList<ShopInfo> list = getShopInfoes();
+//        ArrayList<ShopInfo> list = loadDB();
+//        ArrayList<ShopInfo> tmpList = new ArrayList<ShopInfo>();
+//        Intent intent = getIntent();
+//        int selectType = intent.getIntExtra("type",-1);
+//        if (selectType == -1){
+//            Toast.makeText(MapsActivity.this,"タイプが不正",Toast.LENGTH_LONG).show();
+//            return;
+//        }
+//        if (selectType == 0){
+//            tmpList = list;
+//        } else if (selectType ==1) {
+//            for (ShopInfo shop: list){
+//                if (shop.getCategory() == 1){
+//                    tmpList.add(shop);
+//                }
+//            }
+//        }  else if (selectType ==2) {
+//            for (ShopInfo shop: list){
+//                if (shop.getCategory() == 2){
+//                    tmpList.add(shop);
+//                }
+//            }
+//        } else if (selectType ==3) {
+//            for (ShopInfo shop: list){
+//                if (shop.getCategory() == 3){
+//                    tmpList.add(shop);
+//                }
+//            }
+//        }
+//        for (ShopInfo shop: tmpList){
+//            options.position(shop.getPosition());
+//            options.title(shop.getName());
+//            options.snippet(shop.getInformation());
+//            BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+//            if (shop.getCategory()==2){
+//                icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
+//            }else if (shop.getCategory()==3){
+//                icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+//            }
+//            options.icon(icon);
+//
+//            mMap.addMarker(options);
+//        }
+        loadDB();
+
+    }
+
+    private  void loadDB() {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                shopInfoList = shopInfoDao.getAllShop();
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        setDBMarker(shopInfoList);
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void setDBMarker(List<ShopInfo> shopInfoList) {
+        for(ShopInfo shopInfo: shopInfoList){
+            list.add(shopInfo);
+        }
+        setMarker();
+    }
+
+    private void setMarker(){
         MarkerOptions options = new MarkerOptions();
-        ArrayList<ShopInfo> list = getShopInfoes();
         ArrayList<ShopInfo> tmpList = new ArrayList<ShopInfo>();
         Intent intent = getIntent();
         int selectType = intent.getIntExtra("type",-1);
@@ -201,6 +287,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.addMarker(options);
         }
     }
+
     private class CustomInfoAdapter implements GoogleMap.InfoWindowAdapter{
         private final View mWindow;
         public CustomInfoAdapter(){

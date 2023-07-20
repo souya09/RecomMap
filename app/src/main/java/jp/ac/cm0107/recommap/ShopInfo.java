@@ -57,4 +57,5 @@ public class ShopInfo {
     public void setStar(double star) {
         this.star = star;
     }
+
 }

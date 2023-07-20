@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +26,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import jp.ac.cm0107.recommap.databinding.ActivityRecomEditBinding;
 
@@ -36,11 +40,7 @@ public class RecomEditActivity extends FragmentActivity implements OnMapReadyCal
     private ActivityRecomEditBinding binding;
 
     public static final String DB_NAME = "recom_map.db";
-    private ShopInfoDao shopInfoDao;
-    private List<ShopInfo> shopInfoList;
 
-    private TextView txt;
-    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +48,10 @@ public class RecomEditActivity extends FragmentActivity implements OnMapReadyCal
 
         binding = ActivityRecomEditBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        handler = new Handler();
-        AppDatabase db = Room.databaseBuilder(this,AppDatabase.class,DB_NAME).build();
-        shopInfoDao = db.shopInfoDao();
+
+
+        Spinner spn = findViewById(R.id.spnStCategory);
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -64,8 +65,20 @@ public class RecomEditActivity extends FragmentActivity implements OnMapReadyCal
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText edt = findViewById(R.id.edtName);
-                Toast.makeText(getApplicationContext(),edt.getText().toString()+"を登録します",Toast.LENGTH_LONG).show();
+                EditText edtName = findViewById(R.id.edtName);
+                EditText edtCom = findViewById(R.id.edtComment);
+
+                ShopInfo shopInfo = new ShopInfo();
+                shopInfo.setCategory((Integer) spn.getSelectedItem());
+                shopInfo.setPosition(currLatLng);
+                shopInfo.setName(String.valueOf(edtName.getText()));
+                shopInfo.setInformation(String.valueOf(edtCom.getText()));
+                shopInfo.setStar(ratingBar.getRating());
+
+                ShopInfoHelper helper = new ShopInfoHelper(RecomEditActivity.this);
+                helper.insert(shopInfo);
+
+                Toast.makeText(getApplicationContext(),edtName.getText().toString()+"を登録します",Toast.LENGTH_LONG).show();
                 Toast.makeText(getApplicationContext(),currLatLng.latitude+"/"+currLatLng.longitude,Toast.LENGTH_LONG).show();
 
             }
