@@ -3,18 +3,16 @@ package jp.ac.cm0107.recommap;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import androidx.room.Room;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,11 +23,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import jp.ac.cm0107.recommap.databinding.ActivityRecomEditBinding;
 
@@ -51,7 +44,13 @@ public class RecomEditActivity extends FragmentActivity implements OnMapReadyCal
 
 
         Spinner spn = findViewById(R.id.spnStCategory);
-
+        String[] spinnerItems = {"1","2","3"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                spinnerItems
+        );
+        spn.setAdapter(adapter);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -69,7 +68,7 @@ public class RecomEditActivity extends FragmentActivity implements OnMapReadyCal
                 EditText edtCom = findViewById(R.id.edtComment);
 
                 ShopInfo shopInfo = new ShopInfo();
-                shopInfo.setCategory((Integer) spn.getSelectedItem());
+                shopInfo.setCategory(spn.getSelectedItemPosition()+1);
                 shopInfo.setPosition(currLatLng);
                 shopInfo.setName(String.valueOf(edtName.getText()));
                 shopInfo.setInformation(String.valueOf(edtCom.getText()));

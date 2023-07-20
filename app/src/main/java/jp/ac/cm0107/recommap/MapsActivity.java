@@ -219,32 +219,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private  void loadDB() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                shopInfoList = shopInfoDao.getAllShop();
+        executor.execute(() -> {
+            shopInfoList = shopInfoDao.getAllShop();
 
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        setDBMarker(shopInfoList);
-                    }
-                });
-            }
+            handler.post(() -> setMarker(shopInfoList));
         });
-
     }
 
-    private void setDBMarker(List<ShopInfo> shopInfoList) {
+
+    private void setMarker(List<ShopInfo> shopInfoList){
+        MarkerOptions options = new MarkerOptions();
+        ArrayList<ShopInfo> tmpList = new ArrayList<ShopInfo>();
         for(ShopInfo shopInfo: shopInfoList){
             list.add(shopInfo);
         }
-        setMarker();
-    }
-
-    private void setMarker(){
-        MarkerOptions options = new MarkerOptions();
-        ArrayList<ShopInfo> tmpList = new ArrayList<ShopInfo>();
         Intent intent = getIntent();
         int selectType = intent.getIntExtra("type",-1);
         if (selectType == -1){
